@@ -20,12 +20,12 @@ def build_admin_document(items: list[NewsItem]) -> str:
     lines.append("# 과수 화상병 관련 언론동향 보고")
     lines.append("")
     lines.append(f"- 작성일: {today}")
-    lines.append("- 수집대상: 연합뉴스 RSS")
+    lines.append("- 수집대상: 연합뉴스 RSS 및 Gemini 웹 검색")
     lines.append("- 검색주제: 과수 화상병")
     lines.append("")
     lines.append("## 1. 수집 개요")
     lines.append("")
-    lines.append(f"연합뉴스 RSS에서 과수 화상병 관련 기사를 수집한 결과 총 {len(items)}건이 확인되었습니다.")
+    lines.append(f"RSS 및 Gemini 검색을 통해 과수 화상병 관련 기사 총 {len(items)}건이 확인되었습니다.")
     lines.append("")
     lines.append("## 2. 주제별 주요 내용")
     lines.append("")
@@ -37,7 +37,12 @@ def build_admin_document(items: list[NewsItem]) -> str:
             lines.append(f"### {topic}")
             lines.append("")
             for idx, item in enumerate(topic_items, start=1):
-                lines.append(f"{idx}. [{item.title}]({item.link})")
+                if item.link:
+                    lines.append(f"{idx}. [{item.title}]({item.link})")
+                else:
+                    lines.append(f"{idx}. {item.title}")
+                if item.source:
+                    lines.append(f"   - 출처: {item.source}")
                 if item.published:
                     lines.append(f"   - 보도시각: {item.published}")
                 if item.summary:
@@ -78,7 +83,7 @@ def build_press_release(items: list[NewsItem]) -> str:
     lines.append("")
 
     if items:
-        lines.append("최근 언론 보도에서 확인된 주요 내용은 다음과 같습니다.")
+        lines.append("최근 언론 보도와 웹 검색에서 확인된 주요 내용은 다음과 같습니다.")
         lines.append("")
         for topic, topic_items in grouped.items():
             lines.append(f"### {topic}")
@@ -86,7 +91,7 @@ def build_press_release(items: list[NewsItem]) -> str:
                 lines.append(f"- {item.title}")
             lines.append("")
     else:
-        lines.append("현재 RSS에서 확인된 관련 보도는 없습니다.")
+        lines.append("현재 확인된 관련 보도는 없습니다.")
         lines.append("")
 
     lines.append("관계 기관은 농가 피해 최소화를 위해 의심 증상 신고, 현장 예찰, 방제수칙 홍보를 지속 추진할 예정입니다.")
